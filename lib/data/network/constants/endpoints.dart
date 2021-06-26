@@ -12,4 +12,5 @@ class Endpoints {
 
   // booking endpoints
   static const String getPosts = baseUrl + "/posts";
+  static const String postLogin = baseUrl + "/post_login";
 }

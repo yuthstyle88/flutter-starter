@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:boilerplate/data/network/constants/endpoints.dart';
 import 'package:boilerplate/data/network/dio_client.dart';
 import 'package:boilerplate/data/network/rest_client.dart';
 import 'package:boilerplate/models/post/post_list.dart';
+import 'package:boilerplate/models/post/user.dart';
+import 'package:dio/dio.dart';
 
 class PostApi {
   // dio instance
@@ -20,6 +24,21 @@ class PostApi {
     try {
       final res = await _dioClient.get(Endpoints.getPosts);
       return PostList.fromJson(res);
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
+  }
+
+  Future<User> postLogin(String email, String password) async {
+    try {
+      User user = User(userName: email,password: password);
+      final res = await _dioClient.post(Endpoints.postLogin,
+          options: Options(headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+          }),
+          data: jsonEncode(user.toJson()));
+      return User.fromJson(res);
     } catch (e) {
       print(e.toString());
       throw e;
