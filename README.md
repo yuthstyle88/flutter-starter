@@ -226,7 +226,7 @@ This file contains all the routes for your application.
 import 'package:flutter/material.dart';
 
 import 'ui/home/home.dart';
-import 'ui/login/login.dart';
+import 'ui/login/signup.dart';
 import 'ui/splash/splash.dart';
 
 class Routes {
