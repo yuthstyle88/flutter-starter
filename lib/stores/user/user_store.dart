@@ -63,6 +63,7 @@ abstract class _UserStore with Store {
     loginFuture = ObservableFuture(future);
     await future.then((value) async {
       if (value) {
+        print('[value]  $value');
         _repository.saveIsLoggedIn(true);
         this.isLoggedIn = true;
         this.success = true;
