@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert' as convert;
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,7 +7,7 @@ import 'package:boilerplate/data/network/constants/endpoints.dart';
 import 'package:boilerplate/data/network/dio_client.dart';
 import 'package:boilerplate/data/network/rest_client.dart';
 import 'package:boilerplate/models/post/post_list.dart';
-import 'package:boilerplate/models/post/user.dart';
+import 'package:boilerplate/models/user/user.dart';
 import 'package:dio/dio.dart';
 
 class PostApi {
@@ -32,12 +33,10 @@ class PostApi {
 
   Future<User> postLogin(String email, String password) async {
     try {
-      User user = User(userName: email,password: password);
-      final res = await _dioClient.post(Endpoints.postLogin,
-          options: Options(headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-          }),
-          data: jsonEncode(user.toJson()));
+      final res = await _restClient.post(Endpoints.postLogin,
+          body: convert.jsonEncode({'username': email, 'password': password}),
+          headers: {'Content-Type': 'application/json'}
+      );
       return User.fromJson(res);
     } catch (e) {
       print(e.toString());

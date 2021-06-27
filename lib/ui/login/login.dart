@@ -197,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () async {
         if (_store.canLogin) {
           DeviceUtils.hideKeyboard(context);
-          _userStore.login(_store.userEmail,_store.password);
+          _store.login(context);
         } else {
           _showErrorMessage('Please fill in all fields');
         }

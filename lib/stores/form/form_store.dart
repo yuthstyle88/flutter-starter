@@ -1,5 +1,8 @@
 import 'package:boilerplate/stores/error/error_store.dart';
+import 'package:boilerplate/stores/user/user_store.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 
 part 'form_store.g.dart';
@@ -114,10 +117,9 @@ abstract class _FormStore with Store {
   }
 
   @action
-  Future login() async {
+  Future login(BuildContext context) async {
     loading = true;
-
-    Future.delayed(Duration(milliseconds: 2000)).then((future) {
+    Provider.of<UserStore>(context,listen: false).login(userEmail, password).then((future) {
       loading = false;
       success = true;
     }).catchError((e) {

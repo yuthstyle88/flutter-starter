@@ -11,16 +11,16 @@ class RestClient {
   final JsonDecoder _decoder = JsonDecoder();
 
   // Get:-----------------------------------------------------------------------
-  Future<dynamic> get(String path) {
-    return http.get(Uri.https(Endpoints.baseUrl, path)).then(_createResponse);
+  Future<dynamic> get(Uri path) {
+    return http.get(path).then(_createResponse);
   }
 
   // Post:----------------------------------------------------------------------
-  Future<dynamic> post(String path,
+  Future<dynamic> post(Uri path,
       {Map<String, String>? headers, body, encoding}) {
     return http
         .post(
-          Uri.https(Endpoints.baseUrl, path),
+          path,
           body: body,
           headers: headers,
           encoding: encoding,

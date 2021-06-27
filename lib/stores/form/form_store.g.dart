@@ -115,8 +115,8 @@ mixin _$FormStore on _FormStore, Store {
   final _$loginAsyncAction = AsyncAction('_FormStore.login');
 
   @override
-  Future<dynamic> login() {
-    return _$loginAsyncAction.run(() => super.login());
+  Future<dynamic> login(BuildContext context) {
+    return _$loginAsyncAction.run(() => super.login(context));
   }
 
   final _$forgotPasswordAsyncAction = AsyncAction('_FormStore.forgotPassword');
