@@ -159,12 +159,29 @@ abstract class _FormStore with Store {
     }
   }
 
+  // @action
+  // Future login(BuildContext context) async {
+  //   loading = true;
+  //   Provider.of<UserStore>(context, listen: false)
+  //       .login(userEmail, password)
+  //       .then((future) {
+  //     loading = false;
+  //     success = true;
+  //   }).catchError((e) {
+  //     loading = false;
+  //     success = false;
+  //     errorStore.errorMessage = e.toString().contains("ERROR_USER_NOT_FOUND")
+  //         ? "Username and password doesn't match"
+  //         : "Something went wrong, please check your internet connection and try again";
+  //     print(e);
+  //   });
+  // }
+
   @action
   Future login(BuildContext context) async {
     loading = true;
-    Provider.of<UserStore>(context, listen: false)
-        .login(userEmail, password)
-        .then((future) {
+
+    Future.delayed(Duration(milliseconds: 2000)).then((future) {
       loading = false;
       success = true;
     }).catchError((e) {

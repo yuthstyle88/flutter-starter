@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:boilerplate/data/sharedpref/constants/preferences.dart';
+import 'package:boilerplate/ui/home/tab_screen.dart';
 import 'package:boilerplate/utils/routes/routes.dart';
 import 'package:boilerplate/stores/language/language_store.dart';
 import 'package:boilerplate/stores/post/post_store.dart';
@@ -7,6 +8,7 @@ import 'package:boilerplate/stores/theme/theme_store.dart';
 import 'package:boilerplate/utils/locale/app_localization.dart';
 import 'package:boilerplate/widgets/progress_indicator_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:material_dialog/material_dialog.dart';
 import 'package:provider/provider.dart';
@@ -43,19 +45,23 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
+      bottomNavigationBar: TabsDemoScreen()
     );
   }
+
 
   // app bar methods:-----------------------------------------------------------
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: Text(AppLocalizations.of(context).translate('home_tv_posts')),
       actions: _buildActions(context),
+      backgroundColor: Colors.orangeAccent
     );
   }
 
@@ -247,5 +253,64 @@ class _HomeScreenState extends State<HomeScreen> {
     ).then<void>((T? value) {
       // The value passed to Navigator.pop() or null.
     });
+  }
+}
+
+
+class TabsDemoScreen extends StatefulWidget {
+  TabsDemoScreen() : super();
+
+  @override
+  _TabsDemoScreenState createState() => _TabsDemoScreenState();
+}
+
+class _TabsDemoScreenState extends State<TabsDemoScreen> {
+  int currentTabIndex = 0;
+  List<Widget> tabs = [
+    TabScreen(Colors.white),
+    TabScreen(Colors.white),
+    TabScreen(Colors.white),
+    TabScreen(Colors.white),
+    TabScreen(Colors.white)
+  ];
+
+  onTapped(int index) {
+    setState(() {
+      currentTabIndex = index;
+    });
+  }
+
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: tabs[currentTabIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTapped,
+        selectedItemColor: Colors.orangeAccent,
+        unselectedItemColor: Colors.orangeAccent.withOpacity(.60),
+        currentIndex: currentTabIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.mail),
+            label: 'Messages',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          )
+        ],
+      ),
+    );
   }
 }
