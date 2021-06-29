@@ -72,6 +72,13 @@ abstract class _FormStore with Store {
       confirmPassword.isNotEmpty;
 
   @computed
+  bool get canUpdate =>
+          firstName.isNotEmpty &&
+          lastName.isNotEmpty &&
+          phoneNumber.isNotEmpty;
+
+
+  @computed
   bool get canForgetPassword =>
       !formErrorStore.hasErrorInForgotPassword && userEmail.isNotEmpty;
 
@@ -205,6 +212,27 @@ abstract class _FormStore with Store {
         phoneNumber: phoneNumber);
 
     Provider.of<UserStore>(context, listen: false).signup(user).then((future) {
+      loading = false;
+      success = true;
+    }).catchError((e) {
+      loading = false;
+      success = false;
+      errorStore.errorMessage = e.toString().contains("ERROR_USER_NOT_FOUND")
+          ? "Username and password doesn't match"
+          : "Something went wrong, please check your internet connection and try again";
+      print(e);
+    });
+  }
+
+  @action
+  Future updateUser(BuildContext context) async {
+    loading = true;
+    var user = UserUpdate(
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber);
+
+    Provider.of<UserStore>(context, listen: false).updateUser(user).then((future) {
       loading = false;
       success = true;
     }).catchError((e) {

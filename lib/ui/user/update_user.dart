@@ -219,11 +219,11 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
       buttonColor: Colors.orangeAccent,
       textColor: Colors.white,
       onPressed: () async {
-        if (_store.canRegister) {
+        if (_store.canUpdate) {
           DeviceUtils.hideKeyboard(context);
-          _store.signup(context);
+          _store.updateUser(context);
         } else {
-          _showErrorMessage('Please fill in all fields');
+          _showErrorMessage('Please fill user');
         }
       },
     );

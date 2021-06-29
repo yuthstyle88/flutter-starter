@@ -108,4 +108,10 @@ class Repository {
       return true;
     }).catchError((error) => throw error);
   }
+  Future<User> updateUser(UserUpdate user) async {
+    return await _postApi.postUpdateUser(user).then((user) {
+      return user;
+    }).catchError((error) => throw error);
+  }
+
 }

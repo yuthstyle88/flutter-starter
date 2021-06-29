@@ -56,11 +56,11 @@ class PostApi {
     }
   }
 
-  Future<User> postUserInfo(User user) async {
+  Future<User> postUpdateUser(UserUpdate user) async {
     try {
       var data = convert.jsonEncode(user.toJson());
-      print('[Data] = $data');
-      final res = await _restClient.post(Endpoints.postUpdateUserInfo,
+      print('[postUpdateUser] = $data');
+      final res = await _restClient.post(Endpoints.postUpdateUser,
           body: data, headers: {'Content-Type': 'application/json'});
       return User.fromJson(res);
     } catch (e) {

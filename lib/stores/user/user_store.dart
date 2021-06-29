@@ -128,6 +128,20 @@ abstract class _UserStore with Store {
     });
   }
 
+  @action
+  Future updateUser(UserUpdate user) async {
+
+    final future = _repository.updateUser(user);
+    fetchUserFuture = ObservableFuture(future);
+
+    future.then((user) {
+      this.user =  user;
+    }).catchError((error) {
+      errorStore.errorMessage = DioErrorUtil.handleError(error);
+    });
+  }
+
+
   // general methods:-----------------------------------------------------------
   void dispose() {
     for (final d in _disposers) {
