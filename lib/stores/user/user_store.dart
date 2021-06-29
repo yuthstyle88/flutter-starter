@@ -1,3 +1,4 @@
+import 'package:boilerplate/models/user/user.dart';
 import 'package:boilerplate/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 
@@ -23,7 +24,6 @@ abstract class _UserStore with Store {
 
   // constructor:---------------------------------------------------------------
   _UserStore(Repository repository) : this._repository = repository {
-
     // setting up disposers
     _setupDisposers();
 
@@ -44,7 +44,7 @@ abstract class _UserStore with Store {
 
   // empty responses:-----------------------------------------------------------
   static ObservableFuture<bool> emptyLoginResponse =
-  ObservableFuture.value(false);
+      ObservableFuture.value(false);
 
   // store variables:-----------------------------------------------------------
   @observable
@@ -69,6 +69,27 @@ abstract class _UserStore with Store {
         this.success = true;
       } else {
         print('failed to login');
+      }
+    }).catchError((e) {
+      print(e);
+      this.isLoggedIn = false;
+      this.success = false;
+      throw e;
+    });
+  }
+
+  @action
+  Future signup(User user) async {
+    final future = _repository.signup(user);
+    loginFuture = ObservableFuture(future);
+    await future.then((value) async {
+      if (value) {
+        print('[value]  $value');
+        _repository.saveIsLoggedIn(true);
+        this.isLoggedIn = true;
+        this.success = true;
+      } else {
+        print('failed to sign up');
       }
     }).catchError((e) {
       print(e);

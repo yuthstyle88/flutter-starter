@@ -1,3 +1,4 @@
+import 'package:boilerplate/models/user/user.dart';
 import 'package:boilerplate/stores/error/error_store.dart';
 import 'package:boilerplate/stores/user/user_store.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +27,7 @@ abstract class _FormStore with Store {
   void _setupValidations() {
     _disposers = [
       reaction((_) => userEmail, validateUserEmail),
+      reaction((_) => phoneNumber, validatePhoneNumber),
       reaction((_) => password, validatePassword),
       reaction((_) => confirmPassword, validateConfirmPassword)
     ];
@@ -42,6 +44,15 @@ abstract class _FormStore with Store {
   String confirmPassword = '';
 
   @observable
+  String firstName = '';
+
+  @observable
+  String lastName = '';
+
+  @observable
+  String phoneNumber = '';
+
+  @observable
   bool success = false;
 
   @observable
@@ -49,7 +60,9 @@ abstract class _FormStore with Store {
 
   @computed
   bool get canLogin =>
-      !formErrorStore.hasErrorsInLogin && userEmail.isNotEmpty && password.isNotEmpty;
+      !formErrorStore.hasErrorsInLogin &&
+      userEmail.isNotEmpty &&
+      password.isNotEmpty;
 
   @computed
   bool get canRegister =>
@@ -79,6 +92,21 @@ abstract class _FormStore with Store {
   }
 
   @action
+  void setFirstName(String value) {
+    firstName = value;
+  }
+
+  @action
+  void setLastName(String value) {
+    lastName = value;
+  }
+
+  @action
+  void setPhoneNumber(String value) {
+    phoneNumber = value;
+  }
+
+  @action
   void validateUserEmail(String value) {
     if (value.isEmpty) {
       formErrorStore.userEmail = "Email can't be empty";
@@ -105,21 +133,61 @@ abstract class _FormStore with Store {
     if (value.isEmpty) {
       formErrorStore.confirmPassword = "Confirm password can't be empty";
     } else if (value != password) {
-      formErrorStore.confirmPassword = "Password doen't match";
+      formErrorStore.confirmPassword = "Password doesn't match";
     } else {
       formErrorStore.confirmPassword = null;
     }
   }
 
   @action
-  Future register() async {
-    loading = true;
+  void validatePhoneNumber(String value) {
+    RegExp regExp = new RegExp(
+      r"^0\d{9}",
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    print("hasMatch : " + regExp.hasMatch(value).toString());
+    if (value.isEmpty) {
+      formErrorStore.phoneNumber = "Phone number can't be empty";
+    } else if (value.length != 10) {
+      formErrorStore.phoneNumber = "Invalid phone number";
+    } else if (!regExp.hasMatch(value)) {
+      formErrorStore.phoneNumber = "Invalid phone number";
+    } else {
+      formErrorStore.phoneNumber = null;
+    }
   }
 
   @action
   Future login(BuildContext context) async {
     loading = true;
-    Provider.of<UserStore>(context,listen: false).login(userEmail, password).then((future) {
+    Provider.of<UserStore>(context, listen: false)
+        .login(userEmail, password)
+        .then((future) {
+      loading = false;
+      success = true;
+    }).catchError((e) {
+      loading = false;
+      success = false;
+      errorStore.errorMessage = e.toString().contains("ERROR_USER_NOT_FOUND")
+          ? "Username and password doesn't match"
+          : "Something went wrong, please check your internet connection and try again";
+      print(e);
+    });
+  }
+
+  @action
+  Future signup(BuildContext context) async {
+    loading = true;
+    var user = User(
+        userName: userEmail,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber);
+
+    Provider.of<UserStore>(context, listen: false).signup(user).then((future) {
       loading = false;
       success = true;
     }).catchError((e) {
@@ -152,6 +220,8 @@ abstract class _FormStore with Store {
   void validateAll() {
     validatePassword(password);
     validateUserEmail(userEmail);
+    validateConfirmPassword(confirmPassword);
+    validatePhoneNumber(phoneNumber);
   }
 }
 
@@ -166,6 +236,9 @@ abstract class _FormErrorStore with Store {
 
   @observable
   String? confirmPassword;
+
+  @observable
+  String? phoneNumber;
 
   @computed
   bool get hasErrorsInLogin => userEmail != null || password != null;

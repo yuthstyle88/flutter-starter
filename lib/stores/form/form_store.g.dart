@@ -75,6 +75,51 @@ mixin _$FormStore on _FormStore, Store {
     });
   }
 
+  final _$firstNameAtom = Atom(name: '_FormStore.firstName');
+
+  @override
+  String get firstName {
+    _$firstNameAtom.reportRead();
+    return super.firstName;
+  }
+
+  @override
+  set firstName(String value) {
+    _$firstNameAtom.reportWrite(value, super.firstName, () {
+      super.firstName = value;
+    });
+  }
+
+  final _$lastNameAtom = Atom(name: '_FormStore.lastName');
+
+  @override
+  String get lastName {
+    _$lastNameAtom.reportRead();
+    return super.lastName;
+  }
+
+  @override
+  set lastName(String value) {
+    _$lastNameAtom.reportWrite(value, super.lastName, () {
+      super.lastName = value;
+    });
+  }
+
+  final _$phoneNumberAtom = Atom(name: '_FormStore.phoneNumber');
+
+  @override
+  String get phoneNumber {
+    _$phoneNumberAtom.reportRead();
+    return super.phoneNumber;
+  }
+
+  @override
+  set phoneNumber(String value) {
+    _$phoneNumberAtom.reportWrite(value, super.phoneNumber, () {
+      super.phoneNumber = value;
+    });
+  }
+
   final _$successAtom = Atom(name: '_FormStore.success');
 
   @override
@@ -105,18 +150,18 @@ mixin _$FormStore on _FormStore, Store {
     });
   }
 
-  final _$registerAsyncAction = AsyncAction('_FormStore.register');
-
-  @override
-  Future<dynamic> register() {
-    return _$registerAsyncAction.run(() => super.register());
-  }
-
   final _$loginAsyncAction = AsyncAction('_FormStore.login');
 
   @override
   Future<dynamic> login(BuildContext context) {
     return _$loginAsyncAction.run(() => super.login(context));
+  }
+
+  final _$signupAsyncAction = AsyncAction('_FormStore.signup');
+
+  @override
+  Future<dynamic> signup(BuildContext context) {
+    return _$signupAsyncAction.run(() => super.signup(context));
   }
 
   final _$forgotPasswordAsyncAction = AsyncAction('_FormStore.forgotPassword');
@@ -169,6 +214,39 @@ mixin _$FormStore on _FormStore, Store {
   }
 
   @override
+  void setFirstName(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction(
+        name: '_FormStore.setFirstName');
+    try {
+      return super.setFirstName(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setLastName(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction(
+        name: '_FormStore.setLastName');
+    try {
+      return super.setLastName(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPhoneNumber(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction(
+        name: '_FormStore.setPhoneNumber');
+    try {
+      return super.setPhoneNumber(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void validateUserEmail(String value) {
     final _$actionInfo = _$_FormStoreActionController.startAction(
         name: '_FormStore.validateUserEmail');
@@ -202,11 +280,25 @@ mixin _$FormStore on _FormStore, Store {
   }
 
   @override
+  void validatePhoneNumber(String value) {
+    final _$actionInfo = _$_FormStoreActionController.startAction(
+        name: '_FormStore.validatePhoneNumber');
+    try {
+      return super.validatePhoneNumber(value);
+    } finally {
+      _$_FormStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 userEmail: ${userEmail},
 password: ${password},
 confirmPassword: ${confirmPassword},
+firstName: ${firstName},
+lastName: ${lastName},
+phoneNumber: ${phoneNumber},
 success: ${success},
 loading: ${loading},
 canLogin: ${canLogin},
@@ -284,12 +376,28 @@ mixin _$FormErrorStore on _FormErrorStore, Store {
     });
   }
 
+  final _$phoneNumberAtom = Atom(name: '_FormErrorStore.phoneNumber');
+
+  @override
+  String? get phoneNumber {
+    _$phoneNumberAtom.reportRead();
+    return super.phoneNumber;
+  }
+
+  @override
+  set phoneNumber(String? value) {
+    _$phoneNumberAtom.reportWrite(value, super.phoneNumber, () {
+      super.phoneNumber = value;
+    });
+  }
+
   @override
   String toString() {
     return '''
 userEmail: ${userEmail},
 password: ${password},
 confirmPassword: ${confirmPassword},
+phoneNumber: ${phoneNumber},
 hasErrorsInLogin: ${hasErrorsInLogin},
 hasErrorsInRegister: ${hasErrorsInRegister},
 hasErrorInForgotPassword: ${hasErrorInForgotPassword}

@@ -35,8 +35,7 @@ class PostApi {
     try {
       final res = await _restClient.post(Endpoints.postLogin,
           body: convert.jsonEncode({'username': email, 'password': password}),
-          headers: {'Content-Type': 'application/json'}
-      );
+          headers: {'Content-Type': 'application/json'});
       return User.fromJson(res);
     } catch (e) {
       print(e.toString());
@@ -44,7 +43,20 @@ class PostApi {
     }
   }
 
-/// sample api call with default rest client
+  Future<User> postSignup(User user) async {
+    try {
+      var data = convert.jsonEncode(user.toJson());
+      print('[Data] = $data');
+      final res = await _restClient.post(Endpoints.postSignup,
+          body: data, headers: {'Content-Type': 'application/json'});
+      return User.fromJson(res);
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
+  }
+
+  /// sample api call with default rest client
 //  Future<PostsList> getPosts() {
 //
 //    return _restClient

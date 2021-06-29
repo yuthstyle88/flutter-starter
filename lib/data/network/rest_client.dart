@@ -5,22 +5,23 @@ import 'package:boilerplate/data/network/constants/endpoints.dart';
 import 'package:http/http.dart' as http;
 
 import 'exceptions/network_exceptions.dart';
+import 'package:boilerplate/extensions/string_extension.dart';
 
 class RestClient {
   // instantiate json decoder for json serialization
   final JsonDecoder _decoder = JsonDecoder();
 
   // Get:-----------------------------------------------------------------------
-  Future<dynamic> get(Uri path) {
-    return http.get(path).then(_createResponse);
+  Future<dynamic> get(String path) {
+    return http.get('${Endpoints.baseUrl}$path'.toUri()!).then(_createResponse);
   }
 
   // Post:----------------------------------------------------------------------
-  Future<dynamic> post(Uri path,
+  Future<dynamic> post(String path,
       {Map<String, String>? headers, body, encoding}) {
     return http
         .post(
-          path,
+          '${Endpoints.baseUrl}$path'.toUri()!,
           body: body,
           headers: headers,
           encoding: encoding,
@@ -33,7 +34,7 @@ class RestClient {
       {Map<String, String>? headers, body, encoding}) {
     return http
         .put(
-          Uri.https(Endpoints.baseUrl, path),
+          '${Endpoints.baseUrl}$path'.toUri()!,
           body: body,
           headers: headers,
           encoding: encoding,
@@ -46,7 +47,7 @@ class RestClient {
       {Map<String, String>? headers, body, encoding}) {
     return http
         .delete(
-          Uri.https(Endpoints.baseUrl, path),
+          '${Endpoints.baseUrl}$path'.toUri()!,
           body: body,
           headers: headers,
           encoding: encoding,

@@ -28,12 +28,17 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController _firstnameController = TextEditingController();
   TextEditingController _lastnameController = TextEditingController();
   TextEditingController _phonenumberController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
 
   //stores:---------------------------------------------------------------------
   late ThemeStore _themeStore;
 
   //focus node:-----------------------------------------------------------------
   late FocusNode _passwordFocusNode;
+  late FocusNode _firstNameFocusNode;
+  late FocusNode _lastNameFocusNode;
+  late FocusNode _phoneNumberFocusNode;
+  late FocusNode _confirmPasswordFocusNode;
 
   //stores:---------------------------------------------------------------------
   final _store = FormStore();
@@ -42,6 +47,10 @@ class _SignupScreenState extends State<SignupScreen> {
   void initState() {
     super.initState();
     _passwordFocusNode = FocusNode();
+    _firstNameFocusNode = FocusNode();
+    _lastNameFocusNode = FocusNode();
+    _phoneNumberFocusNode = FocusNode();
+    _confirmPasswordFocusNode = FocusNode();
   }
 
   @override
@@ -121,6 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
             _buildUserIdField(),
             _buildFirstNameField(),
             _buildLastNameField(),
+            _buildPhoneNumberField(),
             _buildPasswordField(),
             _buildConfirmPasswordField(),
             _buildSignUpButton()
@@ -134,9 +144,10 @@ class _SignupScreenState extends State<SignupScreen> {
     return Observer(
       builder: (context) {
         return TextFieldWidget(
-          hint: AppLocalizations.of(context).translate('register_et_user_email'),
+          hint:
+              AppLocalizations.of(context).translate('register_et_user_email'),
           inputType: TextInputType.emailAddress,
-          icon: Icons.person,
+          icon: Icons.email,
           iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
           textController: _userEmailController,
           inputAction: TextInputAction.next,
@@ -145,9 +156,80 @@ class _SignupScreenState extends State<SignupScreen> {
             _store.setUserId(_userEmailController.text);
           },
           onFieldSubmitted: (value) {
-            FocusScope.of(context).requestFocus(_passwordFocusNode);
+            FocusScope.of(context).requestFocus(_firstNameFocusNode);
           },
           errorText: _store.formErrorStore.userEmail,
+        );
+      },
+    );
+  }
+
+  Widget _buildFirstNameField() {
+    return Observer(
+      builder: (context) {
+        return TextFieldWidget(
+          hint:
+              AppLocalizations.of(context).translate('register_et_first_name'),
+          padding: EdgeInsets.only(top: 16.0),
+          icon: Icons.person,
+          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
+          textController: _firstnameController,
+          focusNode: _firstNameFocusNode,
+          inputAction: TextInputAction.next,
+          onChanged: (value) {
+            _store.setFirstName(_firstnameController.text);
+          },
+          onFieldSubmitted: (value) {
+            FocusScope.of(context).requestFocus(_lastNameFocusNode);
+          },
+          errorText: '',
+        );
+      },
+    );
+  }
+
+  Widget _buildLastNameField() {
+    return Observer(
+      builder: (context) {
+        return TextFieldWidget(
+          hint: AppLocalizations.of(context).translate('register_et_last_name'),
+          padding: EdgeInsets.only(top: 16.0),
+          icon: Icons.person,
+          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
+          textController: _lastnameController,
+          focusNode: _lastNameFocusNode,
+          inputAction: TextInputAction.next,
+          onChanged: (value) {
+            _store.setLastName(_lastnameController.text);
+          },
+          onFieldSubmitted: (value) {
+            FocusScope.of(context).requestFocus(_phoneNumberFocusNode);
+          },
+          errorText: '',
+        );
+      },
+    );
+  }
+
+  Widget _buildPhoneNumberField() {
+    return Observer(
+      builder: (context) {
+        return TextFieldWidget(
+          hint: AppLocalizations.of(context)
+              .translate('register_et_phone_number'),
+          padding: EdgeInsets.only(top: 16.0),
+          icon: Icons.phone,
+          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
+          textController: _phonenumberController,
+          errorText: _store.formErrorStore.phoneNumber,
+          focusNode: _phoneNumberFocusNode,
+          inputAction: TextInputAction.next,
+          onChanged: (value) {
+            _store.setPhoneNumber(_phonenumberController.text);
+          },
+          onFieldSubmitted: (value) {
+            FocusScope.of(context).requestFocus(_passwordFocusNode);
+          },
         );
       },
     );
@@ -157,15 +239,18 @@ class _SignupScreenState extends State<SignupScreen> {
     return Observer(
       builder: (context) {
         return TextFieldWidget(
-          hint:
-              AppLocalizations.of(context).translate('register_et_user_password'),
+          hint: AppLocalizations.of(context).translate('register_et_password'),
           isObscure: true,
           padding: EdgeInsets.only(top: 16.0),
           icon: Icons.lock,
           iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
           textController: _passwordController,
-          focusNode: _passwordFocusNode,
           errorText: _store.formErrorStore.password,
+          focusNode: _passwordFocusNode,
+          inputAction: TextInputAction.next,
+          onFieldSubmitted: (value) {
+            FocusScope.of(context).requestFocus(_confirmPasswordFocusNode);
+          },
           onChanged: (value) {
             _store.setPassword(_passwordController.text);
           },
@@ -178,52 +263,18 @@ class _SignupScreenState extends State<SignupScreen> {
     return Observer(
       builder: (context) {
         return TextFieldWidget(
-          hint:
-              AppLocalizations.of(context).translate('register_et_user_confirmpassword'),
+          hint: AppLocalizations.of(context)
+              .translate('register_et_confirm_password'),
           isObscure: true,
           padding: EdgeInsets.only(top: 16.0),
           icon: Icons.lock,
           iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
-          textController: _passwordController,
-          focusNode: _passwordFocusNode,
-          errorText: _store.formErrorStore.password,
+          textController: _confirmPasswordController,
+          focusNode: _confirmPasswordFocusNode,
+          errorText: _store.formErrorStore.confirmPassword,
           onChanged: (value) {
-            _store.setPassword(_passwordController.text);
+            _store.setConfirmPassword(_confirmPasswordController.text);
           },
-        );
-      },
-    );
-  }
-
-  Widget _buildFirstNameField() {
-    return Observer(
-      builder: (context) {
-        return TextFieldWidget(
-          hint:
-              AppLocalizations.of(context).translate('register_et_first_name'),
-          isObscure: true,
-          padding: EdgeInsets.only(top: 16.0),
-          icon: Icons.lock,
-          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
-          textController: _firstnameController,
-          errorText: '',
-        );
-      },
-    );
-  }
-
-  Widget _buildLastNameField() {
-    return Observer(
-      builder: (context) {
-        return TextFieldWidget(
-          hint:
-              AppLocalizations.of(context).translate('register_et_last_name'),
-          isObscure: true,
-          padding: EdgeInsets.only(top: 16.0),
-          icon: Icons.lock,
-          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
-          textController: _lastnameController,
-          errorText: '',
         );
       },
     );
@@ -231,13 +282,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildSignUpButton() {
     return RoundedButtonWidget(
-      buttonText: AppLocalizations.of(context).translate('register_btn_sign_up'),
+      buttonText:
+          AppLocalizations.of(context).translate('register_btn_sign_up'),
       buttonColor: Colors.orangeAccent,
       textColor: Colors.white,
       onPressed: () async {
-        if (_store.canLogin) {
+        if (_store.canRegister) {
           DeviceUtils.hideKeyboard(context);
-          _store.login(context);
+          _store.signup(context);
         } else {
           _showErrorMessage('Please fill in all fields');
         }
@@ -281,7 +333,15 @@ class _SignupScreenState extends State<SignupScreen> {
     // Clean up the controller when the Widget is removed from the Widget tree
     _userEmailController.dispose();
     _passwordController.dispose();
+    _firstnameController.dispose();
+    _lastnameController.dispose();
+    _phonenumberController.dispose();
+    _confirmPasswordController.dispose();
     _passwordFocusNode.dispose();
+    _firstNameFocusNode.dispose();
+    _lastNameFocusNode.dispose();
+    _phoneNumberFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 }

@@ -118,8 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
             _buildUserIdField(),
             _buildPasswordField(),
             _buildForgotPasswordButton(),
-            _buildSignUpButton(),
-            _buildSignInButton()
+            _buildSignInButton(),
+            _buildSignUpButton()
           ],
         ),
       ),
@@ -189,17 +189,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSignUpButton() {
     return Align(
-      alignment: FractionalOffset.centerRight,
-      child: FlatButton(
-        padding: EdgeInsets.all(0.0),
-        child: Text(
-          AppLocalizations.of(context).translate('login_btn_sign_up'),
-          style: Theme.of(context)
-              .textTheme
-              .caption
-              ?.copyWith(color: Colors.orangeAccent),
-        ),
-        onPressed: () {},
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FlatButton(
+            padding: EdgeInsets.all(0.0),
+            child: Text(
+              'Don\'t have an account?',
+              style: Theme.of(context)
+                  .textTheme
+                  .caption
+                  ?.copyWith(color: Colors.orangeAccent),
+            ),
+            onPressed: () {},
+          ),
+          FlatButton(
+            padding: EdgeInsets.all(0.0),
+            child: Text(
+              AppLocalizations.of(context).translate('login_btn_sign_up'),
+              style: Theme.of(context)
+                  .textTheme
+                  .caption
+                  ?.copyWith(color: Colors.orangeAccent),
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  Routes.signup, (Route<dynamic> route) => false);
+            },
+          ),
+        ],
       ),
     );
   }

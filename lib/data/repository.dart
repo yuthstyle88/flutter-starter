@@ -4,6 +4,7 @@ import 'package:boilerplate/data/local/datasources/post/post_datasource.dart';
 import 'package:boilerplate/data/sharedpref/shared_preference_helper.dart';
 import 'package:boilerplate/models/post/post.dart';
 import 'package:boilerplate/models/post/post_list.dart';
+import 'package:boilerplate/models/user/user.dart';
 import 'package:sembast/sembast.dart';
 
 import 'local/constants/db_constants.dart';
@@ -66,11 +67,12 @@ class Repository {
       .then((id) => id)
       .catchError((error) => throw error);
 
-
   // Login:---------------------------------------------------------------------
   Future<bool> login(String email, String password) async {
-  //  return await Future.delayed(Duration(seconds: 2), ()=> true);
-    return await _postApi.postLogin(email, password).then((user) {
+    //  return await Future.delayed(Duration(seconds: 2), ()=> true);
+    return await _postApi
+        .postLogin(email, password)
+        .then((user) {
       return true;
     }).catchError((error) => throw error);
   }
@@ -91,4 +93,10 @@ class Repository {
       _sharedPrefsHelper.changeLanguage(value);
 
   String? get currentLanguage => _sharedPrefsHelper.currentLanguage;
+
+  Future<bool> signup(User user) async {
+    return await _postApi.postSignup(user).then((user) {
+      return true;
+    }).catchError((error) => throw error);
+  }
 }
