@@ -1,5 +1,4 @@
 import 'package:boilerplate/data/local/datasources/post/post_datasource.dart';
-import 'package:boilerplate/data/network/apis/gets/get_api.dart';
 import 'package:boilerplate/data/network/apis/posts/post_api.dart';
 import 'package:boilerplate/data/network/apis/users/user_api.dart';
 import 'package:boilerplate/data/network/dio_client.dart';
@@ -41,7 +40,6 @@ Future<void> setupLocator() async {
 
   // api's:---------------------------------------------------------------------
   getIt.registerSingleton(PostApi(getIt<DioClient>(), getIt<RestClient>()));
-  getIt.registerSingleton(GetApi(getIt<DioClient>(), getIt<RestClient>()));
   getIt.registerSingleton(UserApi(getIt<DioClient>(), getIt<RestClient>()));
 
   // data sources
@@ -50,7 +48,6 @@ Future<void> setupLocator() async {
   // repository:----------------------------------------------------------------
   getIt.registerSingleton(Repository(
     getIt<PostApi>(),
-    getIt<GetApi>(),
     getIt<UserApi>(),
     getIt<SharedPreferenceHelper>(),
     getIt<PostDataSource>(),

@@ -20,6 +20,15 @@ class UserApi {
   // injecting dio instance
   UserApi(this._dioClient, this._restClient);
 
+  Future<User> getUser() async {
+    try {
+      final res = await _dioClient.get(Endpoints.getUserInfo);
+      return User.fromJson(res);
+    } catch (e) {
+      print(e.toString());
+      throw e;
+    }
+  }
 
   Future<User> userLogin(String email, String password) async {
     try {
