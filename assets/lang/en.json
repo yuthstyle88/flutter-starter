@@ -25,6 +25,7 @@
   "home_tv_error": "Error",
   "home_tv_no_post_found": "No posts found",
   "home_tv_choose_language": "Choose Language",
-  "home_end": "-------------------------------------------------------------------------------------"
+  "home_end": "-------------------------------------------------------------------------------------",
 
+  "error_update_user": "Update user error"
 }

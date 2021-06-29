@@ -223,7 +223,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
           DeviceUtils.hideKeyboard(context);
           _store.updateUser(context);
         } else {
-          _showErrorMessage('Please fill user');
+          _showErrorMessage(AppLocalizations.of(context).translate('error_update_user'));
         }
       },
     );
