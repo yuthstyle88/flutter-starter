@@ -1,6 +1,8 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:boilerplate/constants/assets.dart';
 import 'package:boilerplate/data/sharedpref/constants/preferences.dart';
+import 'package:boilerplate/models/user/user.dart';
+import 'package:boilerplate/stores/user/user_store.dart';
 import 'package:boilerplate/utils/routes/routes.dart';
 import 'package:boilerplate/stores/form/form_store.dart';
 import 'package:boilerplate/stores/theme/theme_store.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class UpdateUserScreen extends StatefulWidget {
   @override
@@ -23,40 +26,40 @@ class UpdateUserScreen extends StatefulWidget {
 
 class _UpdateUserScreenState extends State<UpdateUserScreen> {
   //text controllers:-----------------------------------------------------------
-  TextEditingController _userEmailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
   TextEditingController _firstnameController = TextEditingController();
   TextEditingController _lastnameController = TextEditingController();
   TextEditingController _phonenumberController = TextEditingController();
-  TextEditingController _confirmPasswordController = TextEditingController();
 
   //stores:---------------------------------------------------------------------
   late ThemeStore _themeStore;
 
   //focus node:-----------------------------------------------------------------
-  late FocusNode _passwordFocusNode;
   late FocusNode _firstNameFocusNode;
   late FocusNode _lastNameFocusNode;
   late FocusNode _phoneNumberFocusNode;
-  late FocusNode _confirmPasswordFocusNode;
 
   //stores:---------------------------------------------------------------------
   final _store = FormStore();
+  late UserStore _userStore;
 
   @override
   void initState() {
     super.initState();
-    _passwordFocusNode = FocusNode();
     _firstNameFocusNode = FocusNode();
     _lastNameFocusNode = FocusNode();
     _phoneNumberFocusNode = FocusNode();
-    _confirmPasswordFocusNode = FocusNode();
+
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _themeStore = Provider.of<ThemeStore>(context);
+    _userStore =  Provider.of<UserStore>(context);
+    if(!_userStore.loading){
+      _userStore.getUser();
+      print('sssss');
+    }
   }
 
   @override
@@ -75,17 +78,17 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
         children: <Widget>[
           MediaQuery.of(context).orientation == Orientation.landscape
               ? Row(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: _buildLeftSide(),
-              ),
-              Expanded(
-                flex: 1,
-                child: _buildRightSide(),
-              ),
-            ],
-          )
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: _buildLeftSide(),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: _buildRightSide(),
+                    ),
+                  ],
+                )
               : Center(child: _buildRightSide()),
           Observer(
             builder: (context) {
@@ -118,49 +121,29 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
 
   Widget _buildRightSide() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            AppIconWidget(image: 'assets/icons/ic_appicon.png'),
-            SizedBox(height: 24.0),
-            _buildUserIdField(),
-            _buildFirstNameField(),
-            _buildLastNameField(),
-            _buildPhoneNumberField(),
-            _buildPasswordField(),
-            _buildConfirmPasswordField(),
-            _buildSignUpButton()
-          ],
-        ),
+      child: Center(
+        child: FutureBuilder(
+            future: _userStore.getUser(),
+            builder: (context, snapshot) {
+              print('[snapshot] ${_userStore.user}');
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    AppIconWidget(image: 'assets/icons/ic_appicon.png'),
+                    SizedBox(height: 24.0),
+                    _buildFirstNameField(),
+                    _buildLastNameField(),
+                    _buildPhoneNumberField(),
+                    _buildUpdateUserButton()
+                  ],
+                ),
+              );
+            }),
       ),
-    );
-  }
-
-  Widget _buildUserIdField() {
-    return Observer(
-      builder: (context) {
-        return TextFieldWidget(
-          hint:
-          AppLocalizations.of(context).translate('register_et_user_email'),
-          inputType: TextInputType.emailAddress,
-          icon: Icons.email,
-          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
-          textController: _userEmailController,
-          inputAction: TextInputAction.next,
-          autoFocus: false,
-          onChanged: (value) {
-            _store.setUserId(_userEmailController.text);
-          },
-          onFieldSubmitted: (value) {
-            FocusScope.of(context).requestFocus(_firstNameFocusNode);
-          },
-          errorText: _store.formErrorStore.userEmail,
-        );
-      },
     );
   }
 
@@ -169,7 +152,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
       builder: (context) {
         return TextFieldWidget(
           hint:
-          AppLocalizations.of(context).translate('register_et_first_name'),
+              AppLocalizations.of(context).translate('register_et_first_name'),
           padding: EdgeInsets.only(top: 16.0),
           icon: Icons.person,
           iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
@@ -204,6 +187,8 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
           },
           onFieldSubmitted: (value) {
             FocusScope.of(context).requestFocus(_phoneNumberFocusNode);
+
+            User.instance.lastName = value;
           },
           errorText: '',
         );
@@ -227,54 +212,6 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
           onChanged: (value) {
             _store.setPhoneNumber(_phonenumberController.text);
           },
-          onFieldSubmitted: (value) {
-            FocusScope.of(context).requestFocus(_passwordFocusNode);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return Observer(
-      builder: (context) {
-        return TextFieldWidget(
-          hint: AppLocalizations.of(context).translate('register_et_password'),
-          isObscure: true,
-          padding: EdgeInsets.only(top: 16.0),
-          icon: Icons.lock,
-          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
-          textController: _passwordController,
-          errorText: _store.formErrorStore.password,
-          focusNode: _passwordFocusNode,
-          inputAction: TextInputAction.next,
-          onFieldSubmitted: (value) {
-            FocusScope.of(context).requestFocus(_confirmPasswordFocusNode);
-          },
-          onChanged: (value) {
-            _store.setPassword(_passwordController.text);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildConfirmPasswordField() {
-    return Observer(
-      builder: (context) {
-        return TextFieldWidget(
-          hint: AppLocalizations.of(context)
-              .translate('register_et_confirm_password'),
-          isObscure: true,
-          padding: EdgeInsets.only(top: 16.0),
-          icon: Icons.lock,
-          iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
-          textController: _confirmPasswordController,
-          focusNode: _confirmPasswordFocusNode,
-          errorText: _store.formErrorStore.confirmPassword,
-          onChanged: (value) {
-            _store.setConfirmPassword(_confirmPasswordController.text);
-          },
         );
       },
     );
@@ -283,7 +220,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
   Widget _buildUpdateUserButton() {
     return RoundedButtonWidget(
       buttonText:
-      AppLocalizations.of(context).translate('register_btn_update_user'),
+          AppLocalizations.of(context).translate('register_btn_update_user'),
       buttonColor: Colors.orangeAccent,
       textColor: Colors.white,
       onPressed: () async {
@@ -331,17 +268,12 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
   @override
   void dispose() {
     // Clean up the controller when the Widget is removed from the Widget tree
-    _userEmailController.dispose();
-    _passwordController.dispose();
     _firstnameController.dispose();
     _lastnameController.dispose();
     _phonenumberController.dispose();
-    _confirmPasswordController.dispose();
-    _passwordFocusNode.dispose();
     _firstNameFocusNode.dispose();
     _lastNameFocusNode.dispose();
     _phoneNumberFocusNode.dispose();
-    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 }

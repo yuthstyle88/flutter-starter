@@ -1,5 +1,6 @@
 import 'package:boilerplate/models/user/user.dart';
 import 'package:boilerplate/stores/error/error_store.dart';
+import 'package:boilerplate/utils/dio/dio_error_util.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../data/repository.dart';
@@ -48,13 +49,23 @@ abstract class _UserStore with Store {
 
   // store variables:-----------------------------------------------------------
   @observable
+  User? user;
+
+  @observable
   bool success = false;
 
   @observable
   ObservableFuture<bool> loginFuture = emptyLoginResponse;
 
+  static ObservableFuture<User?> emptyUserResponse =
+      ObservableFuture.value(null);
+
+  @observable
+  ObservableFuture<User?> fetchUserFuture =
+      ObservableFuture<User?>(emptyUserResponse);
+
   @computed
-  bool get isLoading => loginFuture.status == FutureStatus.pending;
+  bool get loading => fetchUserFuture.status == FutureStatus.pending;
 
   // actions:-------------------------------------------------------------------
   @action
@@ -102,6 +113,20 @@ abstract class _UserStore with Store {
   logout() {
     this.isLoggedIn = false;
     _repository.saveIsLoggedIn(false);
+  }
+
+  @action
+  Future getUser() async {
+
+    final future = _repository.getUser();
+    fetchUserFuture = ObservableFuture(future);
+
+    future.then((user) {
+      this.user =  user;
+    }).catchError((error) {
+      errorStore.errorMessage = DioErrorUtil.handleError(error);
+    });
+    return user;
   }
 
   // general methods:-----------------------------------------------------------

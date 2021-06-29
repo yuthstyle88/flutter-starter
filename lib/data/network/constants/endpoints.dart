@@ -15,6 +15,7 @@ class Endpoints {
   static const String postLogin = '/post_login';
   static const String postSignup = '/post_signup';
   static const String postUpdateUserInfo = '/post_signup';
+  static const String getUserInfo = '/users/1';
 
 //static Uri postLogin = Uri.http(baseUrl, "/post_login");
 }

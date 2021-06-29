@@ -8,6 +8,7 @@ import 'package:boilerplate/models/user/user.dart';
 import 'package:sembast/sembast.dart';
 
 import 'local/constants/db_constants.dart';
+import 'network/apis/gets/get_api.dart';
 import 'network/apis/posts/post_api.dart';
 
 class Repository {
@@ -16,12 +17,13 @@ class Repository {
 
   // api objects
   final PostApi _postApi;
+  final GetApi _getApi;
 
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
   // constructor
-  Repository(this._postApi, this._sharedPrefsHelper, this._postDataSource);
+  Repository(this._postApi,this._getApi, this._sharedPrefsHelper, this._postDataSource);
 
   // Post: ---------------------------------------------------------------------
   Future<PostList> getPosts() async {
@@ -36,6 +38,13 @@ class Repository {
       return postsList;
     }).catchError((error) => throw error);
   }
+
+  Future<User> getUser() async {
+    return await _getApi.getUser().then((user) {
+      return user;
+    }).catchError((error) => throw error);
+  }
+
 
   Future<List<Post>> findPostById(int id) {
     //creating filter

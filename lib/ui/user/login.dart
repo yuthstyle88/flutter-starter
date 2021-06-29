@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                  Routes.signup, (Route<dynamic> route) => false);
+                  Routes.update_user, (Route<dynamic> route) => false);
             },
           ),
         ],

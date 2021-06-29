@@ -6,6 +6,8 @@ class User {
   String? lastName;
   String? phoneNumber;
 
+  static var instance;
+
   User(
       {this.id,
       required this.userName,
@@ -16,11 +18,11 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
-        userName: json["userName"],
+        userName: json["username"],
         password: json["password"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
-        phoneNumber: json["phoneNumber"],
+        firstName: json["first_name"],
+        lastName: json["last_name"],
+        phoneNumber: json["phone_number"],
       );
 
   Map<String, dynamic> toJson() => {

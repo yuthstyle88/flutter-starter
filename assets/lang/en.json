@@ -16,6 +16,7 @@
   "register_et_password": "Enter password",
   "register_et_confirm_password": "Confirm password",
   "register_btn_sign_up": "Sign Up",
+  "register_btn_update_user": "Update",
   "register_error_fi_fields": "Please fill in all fields",
   "register_end": "------------------------------------------------------------------------------------",
 
