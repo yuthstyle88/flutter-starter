@@ -48,17 +48,18 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
     _firstNameFocusNode = FocusNode();
     _lastNameFocusNode = FocusNode();
     _phoneNumberFocusNode = FocusNode();
-
+    Provider.of<UserStore>(context, listen: false).getUser();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _themeStore = Provider.of<ThemeStore>(context);
-    _userStore =  Provider.of<UserStore>(context);
-    if(!_userStore.loading){
+    _userStore = Provider.of<UserStore>(context);
+
+    // check to see if already called api
+    if (!_userStore.loading) {
       _userStore.getUser();
-      print('sssss');
     }
   }
 
@@ -73,40 +74,38 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
 
   // body methods:--------------------------------------------------------------
   Widget _buildBody() {
-    return Material(
-      child: Stack(
-        children: <Widget>[
-          MediaQuery.of(context).orientation == Orientation.landscape
-              ? Row(
+    return Observer(
+      builder: (context) {
+        return _userStore.loading
+            ? CustomProgressIndicatorWidget()
+            : Material(
+                child: Stack(
                   children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: _buildLeftSide(),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: _buildRightSide(),
+                    MediaQuery.of(context).orientation == Orientation.landscape
+                        ? Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: _buildLeftSide(),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: _buildRightSide(),
+                              ),
+                            ],
+                          )
+                        : Center(child: _buildRightSide()),
+                    Observer(
+                      builder: (context) {
+                        return _store.success
+                            ? navigate(context)
+                            : _showErrorMessage(_store.errorStore.errorMessage);
+                      },
                     ),
                   ],
-                )
-              : Center(child: _buildRightSide()),
-          Observer(
-            builder: (context) {
-              return _store.success
-                  ? navigate(context)
-                  : _showErrorMessage(_store.errorStore.errorMessage);
-            },
-          ),
-          Observer(
-            builder: (context) {
-              return Visibility(
-                visible: _store.loading,
-                child: CustomProgressIndicatorWidget(),
+                ),
               );
-            },
-          )
-        ],
-      ),
+      },
     );
   }
 
@@ -120,29 +119,26 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
   }
 
   Widget _buildRightSide() {
+    _firstnameController.text = _userStore.user!.firstName!;
+    _lastnameController.text = _userStore.user!.lastName!;
+    _phonenumberController.text = _userStore.user!.phoneNumber!;
+
     return SingleChildScrollView(
-      child: Center(
-        child: FutureBuilder(
-            future: _userStore.getUser(),
-            builder: (context, snapshot) {
-              print('[snapshot] ${_userStore.user}');
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    AppIconWidget(image: 'assets/icons/ic_appicon.png'),
-                    SizedBox(height: 24.0),
-                    _buildFirstNameField(),
-                    _buildLastNameField(),
-                    _buildPhoneNumberField(),
-                    _buildUpdateUserButton()
-                  ],
-                ),
-              );
-            }),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            AppIconWidget(image: 'assets/icons/ic_appicon.png'),
+            SizedBox(height: 24.0),
+            _buildFirstNameField(),
+            _buildLastNameField(),
+            _buildPhoneNumberField(),
+            _buildUpdateUserButton()
+          ],
+        ),
       ),
     );
   }
