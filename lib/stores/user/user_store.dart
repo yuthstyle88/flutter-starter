@@ -126,7 +126,6 @@ abstract class _UserStore with Store {
     }).catchError((error) {
       errorStore.errorMessage = DioErrorUtil.handleError(error);
     });
-    return user;
   }
 
   // general methods:-----------------------------------------------------------

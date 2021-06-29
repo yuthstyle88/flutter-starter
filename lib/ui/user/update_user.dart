@@ -48,7 +48,6 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
     _firstNameFocusNode = FocusNode();
     _lastNameFocusNode = FocusNode();
     _phoneNumberFocusNode = FocusNode();
-    Provider.of<UserStore>(context, listen: false).getUser();
   }
 
   @override
