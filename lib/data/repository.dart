@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:boilerplate/data/local/datasources/post/post_datasource.dart';
+import 'package:boilerplate/data/network/apis/users/user_api.dart';
 import 'package:boilerplate/data/sharedpref/shared_preference_helper.dart';
 import 'package:boilerplate/models/post/post.dart';
 import 'package:boilerplate/models/post/post_list.dart';
@@ -18,12 +19,13 @@ class Repository {
   // api objects
   final PostApi _postApi;
   final GetApi _getApi;
+  final UserApi _userApi;
 
   // shared pref object
   final SharedPreferenceHelper _sharedPrefsHelper;
 
   // constructor
-  Repository(this._postApi,this._getApi, this._sharedPrefsHelper, this._postDataSource);
+  Repository(this._postApi, this._getApi,this._userApi, this._sharedPrefsHelper, this._postDataSource);
 
   // Post: ---------------------------------------------------------------------
   Future<PostList> getPosts() async {
@@ -79,8 +81,8 @@ class Repository {
   // Login:---------------------------------------------------------------------
   Future<bool> login(String email, String password) async {
     //  return await Future.delayed(Duration(seconds: 2), ()=> true);
-    return await _postApi
-        .postLogin(email, password)
+    return await _userApi
+        .userLogin(email, password)
         .then((user) {
       return true;
     }).catchError((error) => throw error);
@@ -104,12 +106,12 @@ class Repository {
   String? get currentLanguage => _sharedPrefsHelper.currentLanguage;
 
   Future<bool> signup(User user) async {
-    return await _postApi.postSignup(user).then((user) {
+    return await _userApi.userSignup(user).then((user) {
       return true;
     }).catchError((error) => throw error);
   }
   Future<User> updateUser(UserUpdate user) async {
-    return await _postApi.postUpdateUser(user).then((user) {
+    return await _userApi.userUpdate(user).then((user) {
       return user;
     }).catchError((error) => throw error);
   }
