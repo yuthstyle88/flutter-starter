@@ -23,9 +23,13 @@
   "home_start": "Below are list of strings for home",
   "home_tv_posts": "Posts",
   "home_tv_error": "Error",
+  "home_tv_update_success": "Updated successfully",
   "home_tv_no_post_found": "No posts found",
   "home_tv_choose_language": "Choose Language",
   "home_end": "-------------------------------------------------------------------------------------",
-
+  "ok": "ok",
+  "enter_your_old_password": "Enter your old password",
+  "enter_your_new_password": "Enter your new password",
+  "enter_confirm_password": "Enter confirm password",
   "error_update_user": "Update user error"
 }

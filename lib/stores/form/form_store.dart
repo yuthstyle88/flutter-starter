@@ -72,6 +72,13 @@ abstract class _FormStore with Store {
       confirmPassword.isNotEmpty;
 
   @computed
+  bool get canChangPassword =>
+      !formErrorStore.hasErrorsInRegister &&
+          userEmail.isNotEmpty &&
+          password.isNotEmpty &&
+          confirmPassword.isNotEmpty;
+
+  @computed
   bool get canUpdate =>
           firstName.isNotEmpty &&
           lastName.isNotEmpty &&

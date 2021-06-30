@@ -1,6 +1,9 @@
 import 'package:another_flushbar/flushbar_helper.dart';
 import 'package:boilerplate/data/sharedpref/constants/preferences.dart';
 import 'package:boilerplate/ui/home/tab_screen.dart';
+import 'package:boilerplate/ui/user/change_password_user.dart';
+import 'package:boilerplate/ui/user/signup.dart';
+import 'package:boilerplate/ui/user/update_user.dart';
 import 'package:boilerplate/utils/routes/routes.dart';
 import 'package:boilerplate/stores/language/language_store.dart';
 import 'package:boilerplate/stores/post/post_store.dart';
@@ -267,11 +270,11 @@ class TabsDemoScreen extends StatefulWidget {
 class _TabsDemoScreenState extends State<TabsDemoScreen> {
   int currentTabIndex = 0;
   List<Widget> tabs = [
-    TabScreen(Colors.white),
-    TabScreen(Colors.white),
-    TabScreen(Colors.white),
-    TabScreen(Colors.white),
-    TabScreen(Colors.white)
+    UpdateUserScreen(),
+    SignupScreen(),
+    ChangePasswordUserScreen(),
+    TabScreen(Colors.orange),
+    TabScreen(Colors.blue)
   ];
 
   onTapped(int index) {

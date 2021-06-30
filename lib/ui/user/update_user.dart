@@ -96,8 +96,9 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
                         : Center(child: _buildRightSide()),
                     Observer(
                       builder: (context) {
+                        print('jjjjj = ${_store.success}');
                         return _store.success
-                            ? navigate(context)
+                            ? _showSuccessMessage("asdf")
                             : _showErrorMessage(_store.errorStore.errorMessage);
                       },
                     ),
@@ -121,6 +122,9 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
     _firstnameController.text = _userStore.user!.firstName!;
     _lastnameController.text = _userStore.user!.lastName!;
     _phonenumberController.text = _userStore.user!.phoneNumber!;
+    _store.setPhoneNumber(_phonenumberController.text);
+    _store.setFirstName(_firstnameController.text);
+    _store.setLastName(_lastnameController.text);
 
     return SingleChildScrollView(
       child: Padding(
@@ -135,7 +139,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
             _buildFirstNameField(),
             _buildLastNameField(),
             _buildPhoneNumberField(),
-            _buildUpdateUserButton()
+            if(!_store.success) _buildUpdateUserButton()
           ],
         ),
       ),
@@ -250,6 +254,22 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
           FlushbarHelper.createError(
             message: message,
             title: AppLocalizations.of(context).translate('home_tv_error'),
+            duration: Duration(seconds: 3),
+          )..show(context);
+        }
+      });
+    }
+
+    return SizedBox.shrink();
+  }
+  
+ _showSuccessMessage(String message) {
+    if (message.isNotEmpty) {
+      Future.delayed(Duration(milliseconds: 0), () {
+        if (message.isNotEmpty) {
+          FlushbarHelper.createError(
+            message: message,
+            title: AppLocalizations.of(context).translate('home_tv_update_success'),
             duration: Duration(seconds: 3),
           )..show(context);
         }
