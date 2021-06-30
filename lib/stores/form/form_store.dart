@@ -227,7 +227,7 @@ abstract class _FormStore with Store {
   @action
   Future updateUser(BuildContext context) async {
     loading = true;
-    var user = UserUpdate(
+    var user = User(
         firstName: firstName,
         lastName: lastName,
         phoneNumber: phoneNumber);

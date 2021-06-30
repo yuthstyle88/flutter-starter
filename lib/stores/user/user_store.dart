@@ -129,7 +129,7 @@ abstract class _UserStore with Store {
   }
 
   @action
-  Future updateUser(UserUpdate user) async {
+  Future updateUser(User user) async {
 
     final future = _repository.updateUser(user);
     fetchUserFuture = ObservableFuture(future);

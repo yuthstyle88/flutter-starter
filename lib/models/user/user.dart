@@ -1,7 +1,7 @@
 class User {
   int? id;
-  String userName;
-  String password;
+  String? userName;
+  String? password;
   String? firstName;
   String? lastName;
   String? phoneNumber;
@@ -10,8 +10,8 @@ class User {
 
   User(
       {this.id,
-      required this.userName,
-      required this.password,
+      this.userName,
+      this.password,
       this.firstName,
       this.lastName,
       this.phoneNumber});
@@ -32,25 +32,10 @@ class User {
         "last_name": lastName,
         "phone_number": phoneNumber,
       };
-}
 
-
-class UserUpdate {
-  String? firstName;
-  String? lastName;
-  String? phoneNumber;
-
-  UserUpdate({this.firstName, this.lastName, this.phoneNumber});
-
-  factory UserUpdate.fromJson(Map<String, dynamic> json) => UserUpdate(
-    firstName: json["first_name"],
-    lastName: json["last_name"],
-    phoneNumber: json["phone_number"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "first_name": firstName,
-    "last_name": lastName,
-    "phone_number": phoneNumber,
-  };
+  Map<String, dynamic> toUpdateUserJson() => {
+        "first_name": firstName,
+        "last_name": lastName,
+        "phone_number": phoneNumber,
+      };
 }
